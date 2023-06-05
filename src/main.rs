@@ -82,7 +82,7 @@
 
 
 //references and borrowing
-fn main() {
+// fn main() {
     // let m1 = String::from("Hello");
     // let m2 = String::from("world");
     // let (m1_again, m2_again) = greet(m1, m2);
@@ -152,15 +152,15 @@ fn main() {
 //     s3.push_str(" world");
 //     println!("{s2}");
 
-    let mut n = 1;
-    incr(&n);
-    println!("{n}");
+    // let mut n = 1;
+    // incr(&n);
+    // println!("{n}");
 
-}
+// }
 
-fn incr(n: &mut i32) {
-    *n += 1;
-}
+// fn incr(n: &mut i32) {
+//     *n += 1;
+// }
 // fn get_first(v: &Vec<String>) -> &str {
 //     &v[0]
 // }
@@ -170,3 +170,136 @@ fn incr(n: &mut i32) {
 // fn greet(g1: &String, g2: &String){
 //     println!("{} {}!", g1, g2);
 // }
+
+
+// Fixing Ownership Errors
+
+// fn stringify_name_with_title(name: &Vec<String>) -> String {
+//     let mut full = name.join(" ");
+//     full.push_str(" Esq.");
+//     full
+// }
+
+// fn main() {
+//     let name = vec![String::from("Ferris")];
+//     let first = &name[0];
+//     stringify_name_with_title(&name);
+//     println!("{}", first);
+// }
+
+
+// Fixing an Unsafe Program: Aliasing and Mutating a Data Structure
+// #![allow(unused)]
+// fn main() {
+    // fn add_big_strings(dst: &mut Vec<String>, src: &[String]) {
+    //     let largest_len: usize = dst.iter().max_by_key(|s| s.len()).unwrap().len();
+    //     for s in src {
+    //         if s.len() > largest_len {
+    //             dst.push(s.clone());
+    //         }
+    //     }
+    // }
+
+    //quize
+    // let s = String::from("Hello world");
+    // let s_ref = &s;
+    // let s2 = *s_ref;
+    // println!("{s2}");
+// }
+
+
+//quize
+// fn pass_along(v: &mut Vec<i32>, i: usize) {
+
+//     let n = &mut v[i];
+//     *n = v[i - 1];
+// }
+
+// fn main() {
+//     let mut v = vec![1, 2, 3];
+//     pass_along(&mut v, 1);
+// }
+
+
+// fn main() {
+
+//     let mut point = [0, 1];
+//     let mut x = point[0];
+//     let y = &mut point[1];
+
+//     x += 1;
+//     *y += 1;
+
+//     println!("{} {}", point[0], point[1]);
+
+// }
+
+fn pass_along(v: &mut Vec<i32>, i: usize) {
+
+    let n = &mut v[i];
+    *n = v[i - 1];
+
+}
+
+fn main() {
+    let mut v = vec![1, 2, 3];
+    pass_along(&mut v, 1);
+}
+
+//   Which of the following best describes the undefined behavior that could occur if this program were allowed to execute?
+//   You answered:
+  
+//   There is no undefined behavior in this program
+  
+//   Context: This program is safe. No undefined behavior could occur if it were executed. (If i was outside the bounds of v, then Rust will panic at runtime rather than cause undefined behavior.)
+  
+//   The issue is that Rust doesn't know for sure that v[i] and v[i - 1] are referring to different elements.
+
+// Question 4
+
+// Consider this function that is a simplified variant of the function from the previous quiz:
+
+// /// Adds "Ph.D." to a person's name
+
+// fn award_phd(name: &String) {
+
+//     let mut name = *name;
+
+//     name.push_str(", Ph.D.");
+
+// }
+
+// The Rust compiler rejects this function with the following error:
+
+// error[E0507]: cannot move out of `*name` which is behind a shared reference
+
+//  --> test.rs:3:20
+
+//   |
+
+// 3 |     let mut name = *name;
+
+//   |                    ^^^^^
+
+//   |                    |
+
+//   |                    move occurs because `*name` has type `String`, which does not implement the `Copy` trait
+
+//   |                    help: consider borrowing here: `&*name`
+
+// Assume that the compiler did NOT reject this function. Select each (if any) of the following programs that could possibly cause undefined behavior if executed. If none of these programs could cause undefined behavior, then check "None of these programs" .
+// You answered:
+
+//     let name = String::from("Ferris");
+//     award_phd(&name);
+
+//     let name = String::from("Ferris");
+//     award_phd(&name);
+//     println!("{}", name);
+
+//     let name = String::from("Ferris");
+//     let name_ref = &name;
+//     award_phd(&name);
+//     println!("{}", name_ref);
+
+// Context: The statement let mut name = *name makes name take ownership of the input string. However, the caller also still retains ownership of the string. Therefore after award_phd finishes, the string is deallocated. Therefore every program above has undefined behavior, because name will eventually be deallocated a second time. It does not matter whether name or a reference to name is read after calling award_phd.

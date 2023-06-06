@@ -234,16 +234,44 @@
 
 // }
 
-fn pass_along(v: &mut Vec<i32>, i: usize) {
+// fn pass_along(v: &mut Vec<i32>, i: usize) {
 
-    let n = &mut v[i];
-    *n = v[i - 1];
+//     let n = &mut v[i];
+//     *n = v[i - 1];
 
+// }
+
+//slices
+
+fn first_word(s: &String) -> usize {
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return i;
+        }
+    }
+
+    s.len()
 }
 
+//
+
 fn main() {
-    let mut v = vec![1, 2, 3];
-    pass_along(&mut v, 1);
+    // let mut v = vec![1, 2, 3];
+    // pass_along(&mut v, 1);
+
+    // let s = String::from("Hello World");
+    // let ans = first_word(&s);
+    // println!("{ans}");
+
+    let s = String::from("hello world");
+
+    let hello: &str = &s[..5];
+    let world: &str = &s[6..];
+    let s2: &String = &s;
+
+    println!("{s2}, {hello}, {world}");
 }
 
 //   Which of the following best describes the undefined behavior that could occur if this program were allowed to execute?

@@ -243,35 +243,117 @@
 
 //slices
 
-fn first_word(s: &String) -> usize {
+// fn first_word(s: &String) -> usize {
+//     let bytes = s.as_bytes();
+
+//     for (i, &item) in bytes.iter().enumerate() {
+//         if item == b' ' {
+//             return i;
+//         }
+//     }
+
+//     s.len()
+// }
+
+//rework
+// fn first_word(s: &String) -> &str {
+//     let bytes = s.as_bytes();
+
+//     for (i, &item) in bytes.iter().enumerate() {
+//         if item == b' ' {
+//             return &s[0..i];
+//         }
+//     }
+
+//     &s[..]
+// }
+
+
+fn first_word(s: &str) -> &str {
     let bytes = s.as_bytes();
 
     for (i, &item) in bytes.iter().enumerate() {
         if item == b' ' {
-            return i;
+            return &s[0..i];
         }
     }
 
-    s.len()
+    &s[..]
 }
 
-//
+
+
+// fn main() {
+//     // let mut v = vec![1, 2, 3];
+//     // pass_along(&mut v, 1);
+
+//     // let s = String::from("Hello World");
+//     // let ans = first_word(&s);
+//     // s.clear();
+//     // println!("{ans}");
+
+//     let s = String::from("hello world");
+
+//     // let hello: &str = &s[..5];
+//     // let world: &str = &s[6..];
+//     // let s2: &String = &s;
+
+//     // println!("{s2}, {hello}, {world}");
+
+//     let ans = first_word(&s);
+//     // s.clear();
+//     println!("{ans}");
+
+//     let my_string = String::from("hello world");
+
+//     // `first_word` works on slices of `String`s, whether partial or whole
+//     let word = first_word(&my_string[0..6]);
+//     let word = first_word(&my_string[..]);
+//     // `first_word` also works on references to `String`s, which are equivalent
+//     // to whole slices of `String`s
+//     let word = first_word(&my_string);
+
+//     let my_string_literal = "hello world";
+
+//     // `first_word` works on slices of string literals, whether partial or whole
+//     let word = first_word(&my_string_literal[0..6]);
+//     let word = first_word(&my_string_literal[..]);
+
+//     // Because string literals *are* string slices already,
+//     // this works too, without the slice syntax!
+//     let word = first_word(my_string_literal);
+
+// }
+
+//quize 
 
 fn main() {
-    // let mut v = vec![1, 2, 3];
-    // pass_along(&mut v, 1);
 
-    // let s = String::from("Hello World");
-    // let ans = first_word(&s);
-    // println!("{ans}");
+    let mut s = String::from("hello");
 
-    let s = String::from("hello world");
+    for &item in s.as_bytes().iter() {
+        if item == b'l' {
+            s.push_str(" world");
+        }
+    }
+    println!("{s}");
 
-    let hello: &str = &s[..5];
-    let world: &str = &s[6..];
-    let s2: &String = &s;
 
-    println!("{s2}, {hello}, {world}");
+//     let s = String::from("hello");
+//     let s2: &String = &s;
+//     let s3: &str = &s[..];
+
+// Context: The type &String is a normal reference consisting of a single pointer, so 8 bytes on a 64-bit architecture. The type &str is a special slice reference which consists of a pointer and a length, so 16 bytes. Therefore s3 of type &str uses more memory than s2 of type &String. You can verify this yourself using std::mem::size_of, like so:
+
+// fn main() {
+//   println!(
+//     "&String={} &str={}",
+//     std::mem::size_of::<&String>(),
+//     std::mem::size_of::<&str>(),
+//   );
+// }
+
+// Also, note that Rust will implicitly convert string references to either &String or &str based on the context of the reference. So the expression &s produces two different values based on the expected type of &s.
 }
 
 //   Which of the following best describes the undefined behavior that could occur if this program were allowed to execute?
@@ -331,3 +413,5 @@ fn main() {
 //     println!("{}", name_ref);
 
 // Context: The statement let mut name = *name makes name take ownership of the input string. However, the caller also still retains ownership of the string. Therefore after award_phd finishes, the string is deallocated. Therefore every program above has undefined behavior, because name will eventually be deallocated a second time. It does not matter whether name or a reference to name is read after calling award_phd.
+
+
